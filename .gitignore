@@ -1,0 +1,22 @@
+# 用户数据（绝对不能上传）
+data/
+uploads/
+backup/
+
+# 依赖
+node_modules/
+
+# 构建产物（从源码重新构建）
+public/assets/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+*.log
+
+# 打包文件
+*.zip
+
+# 编辑器
+.vscode/
+.idea/
