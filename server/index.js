@@ -42,6 +42,9 @@ app.use('/api/files', require('./routes/files'));
 app.use('/api/backup', require('./routes/backup'));
 app.use('/api/dashboard', require('./routes/dashboard'));
 app.use('/api/exchanges', require('./routes/exchanges'));
+app.use('/api/todos', require('./routes/todos'));
+app.use('/api/notes', require('./routes/notes'));
+app.use('/api/chat', require('./routes/chat'));
 
 // Serve static files (for future frontend)
 const publicDir = path.join(__dirname, '..', 'public');

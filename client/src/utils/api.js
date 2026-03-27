@@ -106,6 +106,33 @@ export const api = {
   getRecent: () => request('/dashboard/recent'),
   search: (q) => request(`/dashboard/search?q=${encodeURIComponent(q)}`),
   
+  // Todos
+  listTodos: (params) => request(`/todos?${new URLSearchParams(params || {})}`),
+  getTodo: (id) => request(`/todos/${id}`),
+  createTodo: (data) => request('/todos', { method: 'POST', body: JSON.stringify(data) }),
+  updateTodo: (id, data) => request(`/todos/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteTodo: (id) => request(`/todos/${id}`, { method: 'DELETE' }),
+  updateTodoSort: (orders) => request('/todos/sort-order', { method: 'PUT', body: JSON.stringify({ orders }) }),
+  decomposeTodo: (id) => request(`/todos/${id}/decompose`, { method: 'POST' }),
+
+  // Notes
+  listNotes: (params) => request(`/notes?${new URLSearchParams(params || {})}`),
+  getNote: (id) => request(`/notes/${id}`),
+  createNote: (data) => request('/notes', { method: 'POST', body: JSON.stringify(data) }),
+  updateNote: (id, data) => request(`/notes/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteNote: (id) => request(`/notes/${id}`, { method: 'DELETE' }),
+  toggleNotePin: (id) => request(`/notes/${id}/pin`, { method: 'PUT' }),
+
+  // Chat
+  listConversations: () => request('/chat/conversations'),
+  createConversation: (data) => request('/chat/conversations', { method: 'POST', body: JSON.stringify(data || {}) }),
+  deleteConversation: (id) => request(`/chat/conversations/${id}`, { method: 'DELETE' }),
+  updateConversation: (id, data) => request(`/chat/conversations/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  getMessages: (convId, params) => request(`/chat/conversations/${convId}/messages?${new URLSearchParams(params || {})}`),
+  sendMessage: (convId, content) => request(`/chat/conversations/${convId}/messages`, { method: 'POST', body: JSON.stringify({ content }) }),
+  getLLMConfig: () => request('/chat/config'),
+  updateLLMConfig: (data) => request('/chat/config', { method: 'PUT', body: JSON.stringify(data) }),
+
   // Backup
   createBackup: () => request('/backup/create', { method: 'POST' }),
   listBackups: () => request('/backup/list'),
