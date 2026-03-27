@@ -133,7 +133,7 @@ export default function TodoList({ onNavigate }) {
     if (!isExpanded && !subtasks[todoId]) {
       try {
         const data = await api.getTodo(todoId);
-        setSubtasks(prev => ({ ...prev, [todoId]: data.subtasks || data.children || [] }));
+        setSubtasks(prev => ({ ...prev, [todoId]: data.subtasks || [] }));
       } catch {
         toast.error('加载子任务失败');
       }
@@ -221,7 +221,7 @@ export default function TodoList({ onNavigate }) {
             const pc = priorityConfig[todo.priority] || priorityConfig[3];
             const isCompleted = todo.status === 'completed';
             const isExpanded = expandedIds[todo.id];
-            const hasSubtasks = todo.subtask_count > 0 || (todo.subtasks && todo.subtasks.length > 0);
+            const hasSubtasks = (todo.subtask_count || 0) > 0;
             const isDecomposing = decomposingId === todo.id;
 
             return (
@@ -278,7 +278,7 @@ export default function TodoList({ onNavigate }) {
                           className="flex items-center gap-1 text-xs text-accent hover:text-blue-400 transition-colors"
                         >
                           {isExpanded ? <IoChevronDown size={12} /> : <IoChevronForward size={12} />}
-                          {todo.subtask_count || (todo.subtasks && todo.subtasks.length) || 0} 个子任务
+                          {todo.subtask_count || 0} 个子任务
                         </button>
                       )}
                     </div>
