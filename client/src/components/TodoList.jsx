@@ -221,7 +221,7 @@ export default function TodoList({ onNavigate }) {
             const pc = priorityConfig[todo.priority] || priorityConfig[3];
             const isCompleted = todo.status === 'completed';
             const isExpanded = expandedIds[todo.id];
-            const hasSubtasks = (todo.subtask_count || 0) > 0;
+            const hasSubtasks = (todo.subtasks && todo.subtasks.length > 0);
             const isDecomposing = decomposingId === todo.id;
 
             return (
@@ -278,7 +278,7 @@ export default function TodoList({ onNavigate }) {
                           className="flex items-center gap-1 text-xs text-accent hover:text-blue-400 transition-colors"
                         >
                           {isExpanded ? <IoChevronDown size={12} /> : <IoChevronForward size={12} />}
-                          {todo.subtask_count || 0} 个子任务
+                          {todo.subtasks.length} 个子任务
                         </button>
                       )}
                     </div>

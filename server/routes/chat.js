@@ -198,8 +198,8 @@ router.post('/conversations/:id/messages', authMiddleware, async (req, res) => {
 
     // 获取最近20条消息作为上下文
     const contextRows = db.prepare(
-      `SELECT role, content FROM chat_messages WHERE conversation_id = ? AND user_id = ? ORDER BY created_at DESC LIMIT ${MAX_CONTEXT_MESSAGES}`
-    ).all(req.params.id, req.user.id);
+      'SELECT role, content FROM chat_messages WHERE conversation_id = ? AND user_id = ? ORDER BY created_at DESC LIMIT ?'
+    ).all(req.params.id, req.user.id, MAX_CONTEXT_MESSAGES);
 
     const contextMessages = contextRows.reverse().map(m => ({
       role: m.role,
