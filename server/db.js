@@ -156,6 +156,78 @@ db.exec(`
   )
 `);
 
+db.exec(`
+  CREATE TABLE IF NOT EXISTS todos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    parent_id INTEGER,
+    title TEXT NOT NULL,
+    description TEXT,
+    priority INTEGER DEFAULT 2,
+    status TEXT DEFAULT 'pending',
+    due_date TEXT,
+    tags TEXT,
+    sort_order INTEGER DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (parent_id) REFERENCES todos(id) ON DELETE CASCADE
+  )
+`);
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS notes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    content TEXT,
+    category TEXT DEFAULT 'general',
+    tags TEXT,
+    pinned INTEGER DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  )
+`);
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS chat_conversations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    title TEXT DEFAULT '新对话',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  )
+`);
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS chat_messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    conversation_id INTEGER NOT NULL,
+    role TEXT NOT NULL,
+    content TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (conversation_id) REFERENCES chat_conversations(id) ON DELETE CASCADE
+  )
+`);
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS llm_config (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL UNIQUE,
+    provider TEXT DEFAULT 'openai',
+    api_key TEXT,
+    api_url TEXT,
+    model TEXT DEFAULT 'gpt-3.5-turbo',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  )
+`);
+
 db.exec(`CREATE INDEX IF NOT EXISTS idx_profiles_user_id ON profiles(user_id)`);
 db.exec(`CREATE INDEX IF NOT EXISTS idx_projects_user_id ON projects(user_id)`);
 db.exec(`CREATE INDEX IF NOT EXISTS idx_profile_projects_user_id ON profile_projects(user_id)`);
@@ -163,6 +235,12 @@ db.exec(`CREATE INDEX IF NOT EXISTS idx_profile_projects_profile_id ON profile_p
 db.exec(`CREATE INDEX IF NOT EXISTS idx_profile_projects_project_id ON profile_projects(project_id)`);
 db.exec(`CREATE INDEX IF NOT EXISTS idx_exchanges_user_id ON exchanges(user_id)`);
 db.exec(`CREATE INDEX IF NOT EXISTS idx_exchanges_profile_id ON exchanges(profile_id)`);
+db.exec(`CREATE INDEX IF NOT EXISTS idx_todos_user_id ON todos(user_id)`);
+db.exec(`CREATE INDEX IF NOT EXISTS idx_todos_parent_id ON todos(parent_id)`);
+db.exec(`CREATE INDEX IF NOT EXISTS idx_notes_user_id ON notes(user_id)`);
+db.exec(`CREATE INDEX IF NOT EXISTS idx_chat_conversations_user_id ON chat_conversations(user_id)`);
+db.exec(`CREATE INDEX IF NOT EXISTS idx_chat_messages_conversation_id ON chat_messages(conversation_id)`);
+db.exec(`CREATE INDEX IF NOT EXISTS idx_llm_config_user_id ON llm_config(user_id)`);
 
 // Migration helper
 function getColumns(table) {
