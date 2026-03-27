@@ -24,6 +24,9 @@ import ImportExport from './components/ImportExport';
 import Settings from './components/Settings';
 import GlobalSearch from './components/GlobalSearch';
 import StatsPage from './components/StatsPage';
+import TodoList from './components/TodoList';
+import NoteList from './components/NoteList';
+import Chat from './components/Chat';
 
 export default function App() {
   const { user, loading, login, register, logout, checkAuth } = useAuth();
@@ -98,6 +101,12 @@ export default function App() {
         return <ImportExport />;
       case 'settings':
         return <Settings user={user} onLogout={logout} checkAuth={checkAuth} />;
+      case 'todos':
+        return <TodoList onNavigate={navigate} />;
+      case 'notes':
+        return <NoteList onNavigate={navigate} />;
+      case 'chat':
+        return <Chat onNavigate={navigate} />;
       default:
         return <Dashboard onNavigate={navigate} />;
     }

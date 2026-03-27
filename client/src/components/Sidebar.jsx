@@ -1,8 +1,11 @@
 import React from 'react';
-import { IoGrid, IoPerson, IoFolder, IoBusinessOutline, IoNotifications, IoWallet, IoKey, IoDownload, IoSettings, IoLogOut, IoStatsChart } from 'react-icons/io5';
+import { IoGrid, IoPerson, IoFolder, IoBusinessOutline, IoNotifications, IoWallet, IoKey, IoDownload, IoSettings, IoLogOut, IoStatsChart, IoCheckboxOutline, IoDocumentText, IoChatbubble } from 'react-icons/io5';
 
 const navItems = [
   { id: 'dashboard', label: '仪表盘', icon: IoGrid, emoji: '📊' },
+  { id: 'todos', label: '待办任务', icon: IoCheckboxOutline, emoji: '📋' },
+  { id: 'notes', label: '笔记本', icon: IoDocumentText, emoji: '📝' },
+  { id: 'chat', label: 'AI助手', icon: IoChatbubble, emoji: '🤖' },
   { id: 'profiles', label: '身份管理', icon: IoPerson, emoji: '👤' },
   { id: 'projects', label: '项目库', icon: IoFolder, emoji: '📁' },
   { id: 'exchanges', label: '交易所', icon: IoBusinessOutline, emoji: '🏦' },
@@ -20,8 +23,8 @@ export default function Sidebar({ currentPage, onNavigate, onLogout, user }) {
       {/* Logo */}
       <div className="p-5 border-b border-dark-700">
         <h1 className="text-xl font-bold text-gray-100 flex items-center gap-2">
-          <span>🔐</span>
-          <span>账号管理器</span>
+          <span>🐌</span>
+          <span>SnailShell</span>
         </h1>
         {user && (
           <p className="text-sm text-gray-400 mt-1 truncate">
