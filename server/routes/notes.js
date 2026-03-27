@@ -181,6 +181,9 @@ router.delete('/:id', authMiddleware, (req, res) => {
 // PUT /api/notes/:id/pin
 router.put('/:id/pin', authMiddleware, (req, res) => {
   try {
+    const key = getEncryptionKey(req);
+    if (!key) return res.status(400).json({ error: '缺少加密密钥' });
+
     const existing = db.prepare('SELECT * FROM notes WHERE id = ? AND user_id = ?').get(req.params.id, req.user.id);
     if (!existing) {
       return res.status(404).json({ error: '笔记不存在' });
@@ -190,6 +193,7 @@ router.put('/:id/pin', authMiddleware, (req, res) => {
     db.prepare('UPDATE notes SET pinned = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND user_id = ?').run(newPinned, req.params.id, req.user.id);
 
     const updated = db.prepare('SELECT * FROM notes WHERE id = ?').get(req.params.id);
+    updated.content = decryptField(updated.content, key);
 
     res.json({ message: newPinned ? '笔记已置顶' : '笔记已取消置顶', note: updated });
   } catch (err) {
