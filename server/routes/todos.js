@@ -186,9 +186,12 @@ router.delete('/:id', authMiddleware, (req, res) => {
       return res.status(404).json({ error: '任务不存在' });
     }
 
-    // Cascade delete subtasks
-    db.prepare('DELETE FROM todos WHERE parent_id = ? AND user_id = ?').run(req.params.id, req.user.id);
-    db.prepare('DELETE FROM todos WHERE id = ? AND user_id = ?').run(req.params.id, req.user.id);
+    // Cascade delete subtasks and todo in a transaction
+    const deleteTodo = db.transaction(() => {
+      db.prepare('DELETE FROM todos WHERE parent_id = ? AND user_id = ?').run(req.params.id, req.user.id);
+      db.prepare('DELETE FROM todos WHERE id = ? AND user_id = ?').run(req.params.id, req.user.id);
+    });
+    deleteTodo();
 
     res.json({ message: '任务已删除' });
   } catch (err) {
@@ -254,8 +257,13 @@ router.post('/:id/decompose', authMiddleware, async (req, res) => {
 
     let subtaskList;
     try {
-      // Strip markdown code fences if present
-      const cleaned = content.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+      // Strip markdown code fences and extract JSON array
+      let cleaned = content.trim();
+      const arrayStart = cleaned.indexOf('[');
+      const arrayEnd = cleaned.lastIndexOf(']');
+      if (arrayStart !== -1 && arrayEnd !== -1 && arrayEnd > arrayStart) {
+        cleaned = cleaned.slice(arrayStart, arrayEnd + 1);
+      }
       subtaskList = JSON.parse(cleaned);
     } catch (e) {
       console.error('Parse LLM response error:', e.message, content);
